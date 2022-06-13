@@ -6,8 +6,7 @@ namespace AlphaZombie
 {
     public class AlphaZombie : Plugin<Config>
     {
-        private static readonly AlphaZombie singleton = new AlphaZombie();
-        public static AlphaZombie Instance => singleton;
+        internal static AlphaZombie Instance;
 
         public override Version RequiredExiledVersion { get; } = new Version(5, 2, 1);
         public override Version Version { get; } = new Version(1, 0, 0);
@@ -20,8 +19,10 @@ namespace AlphaZombie
         private Handlers.Spawning spawning;
 
 
-        private AlphaZombie()
-        { }
+        public AlphaZombie()
+        {
+            Instance = this;
+        }
 
         public override void OnEnabled()
         {

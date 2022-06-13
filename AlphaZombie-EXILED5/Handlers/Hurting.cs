@@ -1,5 +1,6 @@
 ﻿using Exiled.API.Enums;
 using Exiled.Events.EventArgs;
+using System.Collections.Generic;
 
 namespace AlphaZombie.Handlers
 {
@@ -8,7 +9,7 @@ namespace AlphaZombie.Handlers
         public void OnHurting(HurtingEventArgs ev)
         {
             //Inflicts status effects and damage, and sends broadcast, when player is hit by Alpha Zombie
-            if (ev.Target != ev.Attacker && ev.Attacker.IsAlphaZombie())
+            if (ev.Attacker is not null && ev.Attacker.IsAlphaZombie())
             {
                 HitByAlphaZombie(ev);
             }

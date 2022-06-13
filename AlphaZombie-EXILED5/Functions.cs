@@ -1,6 +1,7 @@
 ﻿using Exiled.API.Enums;
 using Exiled.API.Features;
 using Exiled.API.Extensions;
+using System.Linq;
 using MEC;
 
 namespace AlphaZombie
@@ -20,12 +21,14 @@ namespace AlphaZombie
 
             Timing.CallDelayed(AlphaZombie.Instance.Config.SpawnDelay, () =>
             {
-                var scale = AlphaZombie.Instance.Config.AlphaZombieScale;
-                player.Scale = new UnityEngine.Vector3(scale["x"], scale["y"], scale["z"]);
+            var scale = AlphaZombie.Instance.Config.AlphaZombieScale;
+            player.Scale = new UnityEngine.Vector3(scale["x"], scale["y"], scale["z"]);
 
                 player.EnableEffect(EffectType.Scp207);
                 player.MaxHealth = AlphaZombie.Instance.Config.AlphaZombieMaxHP;
                 player.Health = player.MaxHealth;
+                //player.MaxArtificialHealth = AlphaZombie.Instance.Config.AlphaZombieMaxHS;
+                //player.ArtificialHealth = player.MaxArtificialHealth;
             });
         }
 
@@ -45,7 +48,7 @@ namespace AlphaZombie
 
             const string Name = "SCP 0 4 9 2 nato_a";
 
-            if (killer != target)
+            if (killer is not null)
             {
                 if (killer.Role.Team == Team.MTF)
                 {
@@ -57,26 +60,23 @@ namespace AlphaZombie
                 return;
             }
 
-            //Can't use switch statement; 'DamageTypes' are not constant values
-            if (damageType == DamageType.Decontamination)
+            switch (damageType)
             {
-                AnnounceUsingCassie($"{Name} lost in Decontamination Sequence.");
-                return;
+                case DamageType.Decontamination:
+                    AnnounceUsingCassie($"{Name} lost in Decontamination Sequence.");
+                    return;
+                case DamageType.Tesla:
+                    AnnounceUsingCassie($"{Name} succesfully terminated by Automatic Security System.");
+                    return;
+                case DamageType.Warhead:
+                    AnnounceUsingCassie($"{Name} terminated by Alpha Warhead.");
+                    return;
+                default:
+                    AnnounceUsingCassie($"{Name} terminated. Termination cause unspecified.");
+                    return;
             }
 
-            if (damageType == DamageType.Tesla)
-            {
-                AnnounceUsingCassie($"{Name} succesfully terminated by Automatic Security System.");
-                return;
-            }
 
-            if (damageType == DamageType.Warhead)
-            {
-                AnnounceUsingCassie($"{Name} terminated by Alpha Warhead.");
-                return;
-            }
-
-            AnnounceUsingCassie($"{Name} terminated. Termination cause unspecified.");
         }
 
         //Sends a CASSIE announcement with the configured glitch chance
@@ -84,9 +84,9 @@ namespace AlphaZombie
         {
             Cassie.GlitchyMessage(message, 0.2f, 0.2f);
         }
-
+            
         //Turns Player.UnitName into a CASSIE-readable string
-        public static string UnitNameToCassieWords(this string unit) => $"nato_{unit[0]} {unit[^2..]}";
+        public static string UnitNameToCassieWords(this string unit) => $"nato_{unit[0]} {unit.Substring(unit.Length - 2)}";
 
         public static string RoleTypeToCassieWords(this RoleType role)
         {

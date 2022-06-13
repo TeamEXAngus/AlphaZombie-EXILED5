@@ -9,7 +9,7 @@ namespace AlphaZombie
     {
         [Description("Whether or not the plugin is enabled on this server.")]
         public bool IsEnabled { get; set; } = true;
-
+        
         [Description("The scale that should be applied to the Alpha Zombie.")]
         public Dictionary<string, float> AlphaZombieScale { get; set; } = new Dictionary<string, float>
         {
@@ -19,7 +19,10 @@ namespace AlphaZombie
         };
 
         [Description("The max health of the Alpha Zombie.")]
-        public int AlphaZombieMaxHP { get; set; } = 4000;
+        public int AlphaZombieMaxHP { get; set; } = 3000;
+
+        [Description("The max health of the Alpha Zombie.")]
+        public int AlphaZombieMaxHS { get; set; } = 1000;
 
         [Description("The minimum number of players in the server for an Alpha Zombie to spawn alongisde an SCP-049.")]
         public int MinPlayersForSpawn { get; set; } = 4;
@@ -49,6 +52,6 @@ namespace AlphaZombie
         public List<EffectType> AlphaZombieInflict { get; set; } = new List<EffectType> { EffectType.Poisoned };
 
         [Description("Should debug messages be shown in the server console?")]
-        public bool DebugMessages { get; set; } = true;
+        public bool DebugMessages { get; set; } = true; 
     }
 }
