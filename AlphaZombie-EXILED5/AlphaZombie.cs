@@ -1,6 +1,7 @@
 ﻿using Exiled.API.Features;
 using System;
 using PlayerHandler = Exiled.Events.Handlers.Player;
+using ServerHandler = Exiled.Events.Handlers.Server;
 
 namespace AlphaZombie
 {
@@ -16,8 +17,11 @@ namespace AlphaZombie
 
         private Handlers.Dying dying;
         private Handlers.Hurting hurting;
-        private Handlers.Spawning spawning;
+        private Handlers.ChangingRole changingRole;
+        private Handlers.RoundStarting starting;
 
+        internal bool ShouldSAZ; // SAZ = Spawn Alpha Zombie
+        internal bool ShouldSAZ_If049;
 
         public AlphaZombie()
         {
@@ -28,26 +32,30 @@ namespace AlphaZombie
         {
             dying = new Handlers.Dying();
             hurting = new Handlers.Hurting();
-            spawning = new Handlers.Spawning();
+            changingRole = new Handlers.ChangingRole();
+            starting = new Handlers.RoundStarting();
 
             PlayerHandler.Hurting += hurting.OnHurting;
             PlayerHandler.Dying += dying.OnDying;
-            PlayerHandler.Spawning += spawning.OnSpawning;
+            PlayerHandler.ChangingRole += changingRole.OnChangingRole;
+            ServerHandler.RoundStarted += starting.OnRoundStarting;
 
-            Log.Info("Loaded Alpha Zombie plugin!");
+            base.OnEnabled();
         }
 
         public override void OnDisabled()
         {
             PlayerHandler.Hurting -= hurting.OnHurting;
             PlayerHandler.Dying -= dying.OnDying;
-            PlayerHandler.Spawning -= spawning.OnSpawning;
+            PlayerHandler.ChangingRole -= changingRole.OnChangingRole;
+            ServerHandler.RoundStarted -= starting.OnRoundStarting;
 
             dying = null;
             hurting = null;
-            spawning = null;
+            changingRole = null;
+            starting = null;
 
-            Log.Info("Disabled Alpha Zombie plugin!");
+            base.OnDisabled();
         }
     }
 }

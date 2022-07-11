@@ -3,6 +3,7 @@ using Exiled.API.Features;
 using Exiled.API.Extensions;
 using System.Linq;
 using MEC;
+using UnityEngine;
 
 namespace AlphaZombie
 {
@@ -21,14 +22,12 @@ namespace AlphaZombie
 
             Timing.CallDelayed(AlphaZombie.Instance.Config.SpawnDelay, () =>
             {
-            var scale = AlphaZombie.Instance.Config.AlphaZombieScale;
-            player.Scale = new UnityEngine.Vector3(scale["x"], scale["y"], scale["z"]);
+                var scale = AlphaZombie.Instance.Config.AlphaZombieScale;
+                player.Scale = new Vector3(scale["x"], scale["y"], scale["z"]);
 
                 player.EnableEffect(EffectType.Scp207);
                 player.MaxHealth = AlphaZombie.Instance.Config.AlphaZombieMaxHP;
                 player.Health = player.MaxHealth;
-                //player.MaxArtificialHealth = AlphaZombie.Instance.Config.AlphaZombieMaxHS;
-                //player.ArtificialHealth = player.MaxArtificialHealth;
             });
         }
 
@@ -65,18 +64,19 @@ namespace AlphaZombie
                 case DamageType.Decontamination:
                     AnnounceUsingCassie($"{Name} lost in Decontamination Sequence.");
                     return;
+
                 case DamageType.Tesla:
                     AnnounceUsingCassie($"{Name} succesfully terminated by Automatic Security System.");
                     return;
+
                 case DamageType.Warhead:
                     AnnounceUsingCassie($"{Name} terminated by Alpha Warhead.");
                     return;
+
                 default:
                     AnnounceUsingCassie($"{Name} terminated. Termination cause unspecified.");
                     return;
             }
-
-
         }
 
         //Sends a CASSIE announcement with the configured glitch chance
@@ -84,7 +84,7 @@ namespace AlphaZombie
         {
             Cassie.GlitchyMessage(message, 0.2f, 0.2f);
         }
-            
+
         //Turns Player.UnitName into a CASSIE-readable string
         public static string UnitNameToCassieWords(this string unit) => $"nato_{unit[0]} {unit.Substring(unit.Length - 2)}";
 
@@ -104,5 +104,7 @@ namespace AlphaZombie
 
         //Self explanatory, for code readability
         public static bool IsAlphaZombie(this Player player) => player.SessionVariables.ContainsKey("IsAlphaZombie");
+
+        public static bool PercentChance(int chance) => chance <= Random.Range(1, 101);
     }
 }

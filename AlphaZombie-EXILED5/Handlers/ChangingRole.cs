@@ -5,35 +5,49 @@ using NorthwoodLib.Pools;
 using System.Linq;
 using UnityEngine;
 using System.Collections.Generic;
+using Exiled.API.Extensions;
+using Exiled.API.Enums;
 
 namespace AlphaZombie.Handlers
 {
-    internal class Spawning
+    internal class ChangingRole
     {
-        public void OnSpawning(SpawningEventArgs ev)
+        public void OnChangingRole(ChangingRoleEventArgs ev)
         {
             DestroyAZIfClassChanged(ev.Player);
-            TrySpawnAZIf049Spawned(ev.Player);
+
+            if (ev.Reason != SpawnReason.RoundStart)
+                return;
+
+            if (ev.NewRole.GetSide() == Side.Scp &&
+                AlphaZombie.Instance.ShouldSAZ)
+            {
+                AlphaZombie.Instance.ShouldSAZ = false;
+                ev.Player.SpawnAlphaZombie();
+                return;
+            }
+
+            if (ev.NewRole == RoleType.Scp049 &&
+                AlphaZombie.Instance.ShouldSAZ_If049)
+            {
+                AlphaZombie.Instance.ShouldSAZ_If049 = false;
+                TrySpawnAZIf049Spawned();
+                return;
+            }
         }
 
         private void DestroyAZIfClassChanged(Player Player)
         {
-            //Destroys Alpha Zombie if they change class
             if (Player.IsAlphaZombie() && Player.Role != RoleType.Scp0492)
             {
                 Player.DestroyAlphaZombie();
             }
         }
 
-        private void TrySpawnAZIf049Spawned(Player Player)
+        private void TrySpawnAZIf049Spawned()
         {
-            bool ShouldTrySpawnAZ = Player.Role == RoleType.Scp049 &&
-                                    Round.ElapsedTime.TotalSeconds <= 5; //Five seconds chosen arbitrarily
-            if (ShouldTrySpawnAZ)
-            {
-                SpawningAZ(out bool SpawnSuccess);
-                Log.Debug($"Failed to spawn Alpha Zombie.", !SpawnSuccess && AlphaZombie.Instance.Config.DebugMessages);
-            }
+            SpawningAZ(out bool SpawnSuccess);
+            Log.Debug($"Failed to spawn Alpha Zombie.", !SpawnSuccess && AlphaZombie.Instance.Config.DebugMessages);
         }
 
         //Boolean return value states whether a player was spawned or not.
@@ -42,10 +56,8 @@ namespace AlphaZombie.Handlers
             var PlayerList = ListPool<Player>.Shared.Rent(Player.List);
 
             bool EnoughPlayers = PlayerList.Count >= AlphaZombie.Instance.Config.MinPlayersForSpawn;
-            bool Chance = PercentChance(AlphaZombie.Instance.Config.AlphaZombieSpawnChance);
-            bool CanSpawn = EnoughPlayers && Chance;
 
-            if (!CanSpawn)
+            if (!EnoughPlayers)
             {
                 Success = false;
                 return;
@@ -80,11 +92,7 @@ namespace AlphaZombie.Handlers
             }
 
             Success = true;
-            return ListOfPlayersNot049[RandomIntInRange(0, ListCount)];
+            return ListOfPlayersNot049[Random.Range(0, ListCount + 1)];
         }
-
-        private int RandomIntInRange(int min, int max) => Random.Range(min, max + 1); //Unity random has an exclusive max argument
-        private bool PercentChance(int chance) => chance <= Random.Range(1, 101);
-    
     }
 }

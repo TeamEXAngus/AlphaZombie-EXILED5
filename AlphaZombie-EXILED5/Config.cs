@@ -9,7 +9,7 @@ namespace AlphaZombie
     {
         [Description("Whether or not the plugin is enabled on this server.")]
         public bool IsEnabled { get; set; } = true;
-        
+
         [Description("The scale that should be applied to the Alpha Zombie.")]
         public Dictionary<string, float> AlphaZombieScale { get; set; } = new Dictionary<string, float>
         {
@@ -19,16 +19,16 @@ namespace AlphaZombie
         };
 
         [Description("The max health of the Alpha Zombie.")]
-        public int AlphaZombieMaxHP { get; set; } = 3000;
-
-        [Description("The max health of the Alpha Zombie.")]
-        public int AlphaZombieMaxHS { get; set; } = 1000;
+        public int AlphaZombieMaxHP { get; set; } = 4000;
 
         [Description("The minimum number of players in the server for an Alpha Zombie to spawn alongisde an SCP-049.")]
         public int MinPlayersForSpawn { get; set; } = 4;
 
-        [Description("The percent chance that an Alpha Zombie will spawn alongside an SCP-049.")]
-        public int AlphaZombieSpawnChance { get; set; } = 50;
+        [Description("The percent chance that an Alpha Zombie will spawn when the round starts.")]
+        public int AlphaZombieSpawnChance { get; set; } = 20;
+
+        [Description("The ADDITIONAL percent chance that an Alpha Zombie will spawn when an SCP-049 spawns.")]
+        public int AlphaZombieSpawnAlongside049Chance { get; set; } = 40;
 
         [Description("How long in seconds should the game wait before changing the Alpha Zombie's size and HP. Set this to a higher value if scale or HP aren't working.")]
         public float SpawnDelay { get; set; } = 3f;
@@ -52,6 +52,6 @@ namespace AlphaZombie
         public List<EffectType> AlphaZombieInflict { get; set; } = new List<EffectType> { EffectType.Poisoned };
 
         [Description("Should debug messages be shown in the server console?")]
-        public bool DebugMessages { get; set; } = true; 
+        public bool DebugMessages { get; set; } = true;
     }
 }
