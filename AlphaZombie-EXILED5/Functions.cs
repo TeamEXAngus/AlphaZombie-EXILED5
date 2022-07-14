@@ -1,9 +1,8 @@
-﻿using Exiled.API.Enums;
+﻿using System;
+using Exiled.API.Enums;
 using Exiled.API.Features;
 using Exiled.API.Extensions;
 using AlphaZombie.Components;
-using UnityEngine;
-using System;
 
 namespace AlphaZombie
 {

@@ -6,7 +6,6 @@ namespace AlphaZombie.Handlers
     {
         public void OnDying(DyingEventArgs ev)
         {
-            //Destroys Alpha Zombie when they die
             if (ev.Target.IsAlphaZombie())
             {
                 ev.Target.DestroyAlphaZombie();

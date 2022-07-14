@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Exiled.Events.EventArgs;
-
-namespace AlphaZombie.Handlers
+﻿namespace AlphaZombie.Handlers
 {
     internal class RoundStarting
     {

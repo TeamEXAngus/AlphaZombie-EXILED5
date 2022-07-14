@@ -1,6 +1,5 @@
-﻿using Exiled.API.Features;
-using System;
-using UnityEngine;
+﻿using System;
+using Exiled.API.Features;
 using PlayerHandler = Exiled.Events.Handlers.Player;
 using ServerHandler = Exiled.Events.Handlers.Server;
 
@@ -18,6 +17,7 @@ namespace AlphaZombie
 
         private Handlers.Dying dying;
         private Handlers.Hurting hurting;
+        private Handlers.UsedItem usedItem;
         private Handlers.ChangingRole changingRole;
         private Handlers.RoundStarting starting;
 
@@ -33,11 +33,13 @@ namespace AlphaZombie
         {
             dying = new Handlers.Dying();
             hurting = new Handlers.Hurting();
+            usedItem = new Handlers.UsedItem();
             changingRole = new Handlers.ChangingRole();
             starting = new Handlers.RoundStarting();
 
-            PlayerHandler.Hurting += hurting.OnHurting;
             PlayerHandler.Dying += dying.OnDying;
+            PlayerHandler.Hurting += hurting.OnHurting;
+            PlayerHandler.UsedItem += usedItem.OnUsedItem;
             PlayerHandler.ChangingRole += changingRole.OnChangingRole;
             ServerHandler.RoundStarted += starting.OnRoundStarting;
 
@@ -46,13 +48,15 @@ namespace AlphaZombie
 
         public override void OnDisabled()
         {
-            PlayerHandler.Hurting -= hurting.OnHurting;
             PlayerHandler.Dying -= dying.OnDying;
+            PlayerHandler.Hurting -= hurting.OnHurting;
+            PlayerHandler.UsedItem -= usedItem.OnUsedItem;
             PlayerHandler.ChangingRole -= changingRole.OnChangingRole;
             ServerHandler.RoundStarted -= starting.OnRoundStarting;
 
             dying = null;
             hurting = null;
+            usedItem = null;
             changingRole = null;
             starting = null;
 

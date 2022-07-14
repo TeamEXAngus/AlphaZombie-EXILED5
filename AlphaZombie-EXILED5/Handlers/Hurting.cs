@@ -1,6 +1,5 @@
 ﻿using Exiled.API.Enums;
 using Exiled.Events.EventArgs;
-using System.Collections.Generic;
 
 namespace AlphaZombie.Handlers
 {

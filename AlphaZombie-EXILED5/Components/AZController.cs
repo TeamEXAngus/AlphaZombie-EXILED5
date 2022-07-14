@@ -1,13 +1,7 @@
-﻿using Exiled.API.Features;
-using Exiled.Events.EventArgs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
 using Exiled.API.Enums;
 using PlayerStatsSystem;
+using Exiled.API.Features;
 
 namespace AlphaZombie.Components
 {
@@ -48,7 +42,7 @@ namespace AlphaZombie.Components
         {
             TimeSinceTakenDamage += Time.deltaTime;
 
-            if (TimeSinceTakenDamage > Configs.AlphaZombieHSRegenTime)
+            if (TimeSinceTakenDamage > Configs.AlphaZombieHSRegenTime && HumeShieldProcess.CurrentAmount < Configs.AlphaZombieMaxHS)
             {
                 HumeShieldProcess.CurrentAmount += Configs.AlphaZombieHSRegentAmount * Time.deltaTime;
             }
