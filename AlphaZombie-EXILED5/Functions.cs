@@ -1,48 +1,41 @@
 ﻿using Exiled.API.Enums;
 using Exiled.API.Features;
 using Exiled.API.Extensions;
-using System.Linq;
-using MEC;
+using AlphaZombie.Components;
 using UnityEngine;
+using System;
 
 namespace AlphaZombie
 {
     internal static class Functions
     {
+        private static Config Configs => AlphaZombie.Instance.Config;
+
         //Turns a player into an Alpha Zombie
         public static void SpawnAlphaZombie(this Player player)
         {
-            player.Position = RoleExtensions.GetRandomSpawnProperties(RoleType.Scp049).Item1; // GetRandomSpawnProperties returns Tuple<Vector3, float>
+            (player.Position, _) = RoleExtensions.GetRandomSpawnProperties(RoleType.Scp049); // GetRandomSpawnProperties returns Tuple<Vector3, float>
             player.SetRole(RoleType.Scp0492, lite: true);
-            player.ClearInventory(); //Must clear items because (in this case) SetRole doesn't remove them
-            player.SessionVariables.Add("IsAlphaZombie", true);
+            player.ClearInventory();
 
-            if (AlphaZombie.Instance.Config.BroadcastOnSpawn != "none")
-                player.Broadcast(AlphaZombie.Instance.Config.BroadcastDuration, AlphaZombie.Instance.Config.BroadcastOnSpawn);
+            if (Configs.BroadcastOnSpawn != "none")
+                player.Broadcast(Configs.BroadcastDuration, Configs.BroadcastOnSpawn);
 
-            Timing.CallDelayed(AlphaZombie.Instance.Config.SpawnDelay, () =>
-            {
-                var scale = AlphaZombie.Instance.Config.AlphaZombieScale;
-                player.Scale = new Vector3(scale["x"], scale["y"], scale["z"]);
-
-                player.EnableEffect(EffectType.Scp207);
-                player.MaxHealth = AlphaZombie.Instance.Config.AlphaZombieMaxHP;
-                player.Health = player.MaxHealth;
-            });
+            if (!player.IsAlphaZombie())
+                player.GameObject.AddComponent<AZController>();
         }
 
         //Stops a player from being an Alpha Zombie
         public static void DestroyAlphaZombie(this Player player)
         {
-            player.SessionVariables.Remove("IsAlphaZombie");
-            player.Scale = UnityEngine.Vector3.one;
-            player.DisableEffect(EffectType.Scp207);
+            player.GameObject.TryGetComponent<AZController>(out var Controller);
+            UnityEngine.Object.Destroy(Controller);
         }
 
         //Announces the death of an Alpha Zombie through CASSIE
         public static void AlphaZombieDeathAnnouce(DamageType damageType, Player killer, Player target)
         {
-            if (!AlphaZombie.Instance.Config.DeathAnnounce)
+            if (!Configs.DeathAnnounce)
                 return;
 
             const string Name = "SCP 0 4 9 2 nato_a";
@@ -102,9 +95,16 @@ namespace AlphaZombie
             };
         }
 
-        //Self explanatory, for code readability
-        public static bool IsAlphaZombie(this Player player) => player.SessionVariables.ContainsKey("IsAlphaZombie");
+        public static bool IsAlphaZombie(this Player player, out AZController Controller)
+        {
+            return player.GameObject.TryGetComponent(out Controller);
+        }
 
-        public static bool PercentChance(int chance) => chance >= Random.Range(1, 101);
+        public static bool IsAlphaZombie(this Player player)
+        {
+            return IsAlphaZombie(player, out _);
+        }
+
+        public static bool PercentChance(int chance) => chance >= UnityEngine.Random.Range(1, 101);
     }
 }

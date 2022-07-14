@@ -59,12 +59,4 @@ namespace AlphaZombie
             base.OnDisabled();
         }
     }
-
-    public class Test : MonoBehaviour
-    {
-        private void Update()
-        {
-            Log.Debug("abcde");
-        }
-    }
 }

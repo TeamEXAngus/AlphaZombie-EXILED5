@@ -26,6 +26,22 @@ namespace AlphaZombie.Components
             HumeShieldProcess = AZPlayer.ReferenceHub.playerStats.GetModule<AhpStat>()
                 .ServerAddProcess(Configs.AlphaZombieMaxHS, Configs.AlphaZombieMaxHS,
                 decay: 0, efficacy: 1, sustain: 0, persistant: true);
+
+            MEC.Timing.CallDelayed(Configs.SpawnDelay, () =>
+            {
+                var scale = Configs.AlphaZombieScale;
+                AZPlayer.Scale = new Vector3(scale["x"], scale["y"], scale["z"]);
+
+                AZPlayer.EnableEffect(EffectType.Scp207);
+                AZPlayer.MaxHealth = Configs.AlphaZombieMaxHP;
+                AZPlayer.Health = AZPlayer.MaxHealth;
+            });
+        }
+
+        public void OnDestroy()
+        {
+            AZPlayer.Scale = Vector3.one;
+            AZPlayer.DisableEffect(EffectType.Scp207);
         }
 
         public void Update()
@@ -36,10 +52,6 @@ namespace AlphaZombie.Components
             {
                 HumeShieldProcess.CurrentAmount += Configs.AlphaZombieHSRegentAmount * Time.deltaTime;
             }
-        }
-
-        public void OnHurting(HurtingEventArgs ev)
-        {
         }
     }
 }

@@ -36,14 +36,15 @@ namespace AlphaZombie.Handlers
         //Called when Alpha Zombie takes damage, prevents coke damage and modifies decont damage
         public void AlphaZombieDamageHandlers(HurtingEventArgs ev)
         {
-            switch (ev.Handler.CustomBase.Type)
+            if (ev.Handler.CustomBase.Type == DamageType.Scp207)
             {
-                case DamageType.Scp207:
-                    ev.IsAllowed = false;
-                    return;
-                case DamageType.Decontamination:
-                    ev.Amount = AlphaZombie.Instance.Config.AlphaZombieMaxHP * 0.1f;
-                    return;
+                ev.IsAllowed = false;
+                return;
+            }
+
+            if (ev.Target.IsAlphaZombie(out var Controller))
+            {
+                Controller.TimeSinceTakenDamage = 0;
             }
         }
     }
