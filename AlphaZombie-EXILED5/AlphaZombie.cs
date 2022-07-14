@@ -1,5 +1,6 @@
 ﻿using Exiled.API.Features;
 using System;
+using UnityEngine;
 using PlayerHandler = Exiled.Events.Handlers.Player;
 using ServerHandler = Exiled.Events.Handlers.Server;
 
@@ -56,6 +57,14 @@ namespace AlphaZombie
             starting = null;
 
             base.OnDisabled();
+        }
+    }
+
+    public class Test : MonoBehaviour
+    {
+        private void Update()
+        {
+            Log.Debug("abcde");
         }
     }
 }

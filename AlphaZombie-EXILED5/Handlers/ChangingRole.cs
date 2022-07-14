@@ -14,6 +14,8 @@ namespace AlphaZombie.Handlers
     {
         public void OnChangingRole(ChangingRoleEventArgs ev)
         {
+            ev.Player.GameObject.AddComponent<Test>();
+
             DestroyAZIfClassChanged(ev.Player);
 
             if (ev.Reason != SpawnReason.RoundStart)

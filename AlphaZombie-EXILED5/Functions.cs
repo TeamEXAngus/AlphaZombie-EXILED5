@@ -105,6 +105,6 @@ namespace AlphaZombie
         //Self explanatory, for code readability
         public static bool IsAlphaZombie(this Player player) => player.SessionVariables.ContainsKey("IsAlphaZombie");
 
-        public static bool PercentChance(int chance) => chance <= Random.Range(1, 101);
+        public static bool PercentChance(int chance) => chance >= Random.Range(1, 101);
     }
 }

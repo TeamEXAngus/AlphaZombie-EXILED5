@@ -19,7 +19,16 @@ namespace AlphaZombie
         };
 
         [Description("The max health of the Alpha Zombie.")]
-        public int AlphaZombieMaxHP { get; set; } = 4000;
+        public int AlphaZombieMaxHP { get; set; } = 2000;
+
+        [Description("The max Hume Shield of the Alpha Zombie.")]
+        public int AlphaZombieMaxHS { get; set; } = 1000;
+
+        [Description("The number of seconds after taking damage before an Alpha Zombie starts regenerating Hume Shield.")]
+        public int AlphaZombieHSRegenTime { get; set; } = 15;
+
+        [Description("The amount of Hume Shield regenerated per second.")]
+        public int AlphaZombieHSRegentAmount { get; set; } = 15;
 
         [Description("The minimum number of players in the server for an Alpha Zombie to spawn alongisde an SCP-049.")]
         public int MinPlayersForSpawn { get; set; } = 4;
